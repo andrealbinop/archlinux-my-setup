@@ -1,0 +1,15 @@
+---
+- name: "Enable locales on /etc/locale.gen"
+  lineinfile:
+    dest: /etc/locale.gen
+    regexp: "^#{{ item }}.*"
+    line: "{{ item }}"
+  with_items: locales
+
+- name: "Exports first configured locale"
+  command: "export LANG={{ item.1.split(' ')[0] }}"
+    dest: /etc/locale.gen
+    regexp: "^#{{ item }}.*"
+    line: "{{ item }}"
+  when: item.0 == '0'
+  with_indexed_items: locales

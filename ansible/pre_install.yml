@@ -1,0 +1,6 @@
+---
+- hosts: all
+  vars_files: ['../config.yml']
+  tasks:
+    - { include: storage.yml, parted_exec: "/usr/bin/parted -s", vg: "vg_{{ storage.name.split('/')[-1] }}" }
+    - include: pacstrap.yml

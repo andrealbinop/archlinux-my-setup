@@ -1,0 +1,44 @@
+---
+- name: "Creates partition table on storage"
+  command: "{{ parted_exec }} {{ storage.name }} mklabel {{ storage.scheme }}"
+
+- name: "Creates an EFI boot system partition"
+  shell: "{{ parted_exec }} {{ storage.name }} mkpart esp fat32 1M 513M && {{ parted_exec }} {{ storage.name }} set 1 boot on"
+
+- name: "Creates physical partition with 513M offset and enables LVM, filling all the remaining space."
+  shell: "{{ parted_exec }} {{ storage.name }} mkpart primary ext4 513M 100% && {{ parted_exec }} {{ storage.name }} set 2 lvm on"
+
+- name: "Creates a volume group for each physical partition."
+  lvg:
+    pvs: "{{ storage.name }}2"
+    vg: "{{ vg }}"
+    force: yes
+
+- name: "Creates logical partitions for each volume group for root partition"
+  lvol:
+    vg: "{{ vg }}"
+    lv: "vl_{{ item.0 }}"
+    size: "{{ item.1.size }}"
+  with_indexed_items: storage.volumes
+
+- name: "Format data values"
+  filesystem:
+    fstype: "{{ item.1.type }}"
+    dev: "/dev/{{ vg }}/vl_{{ item.0 }}"
+  when: item.1.type != "swap"
+  with_indexed_items: storage.volumes
+
+- name: "Setup swap partition"
+  shell: "/usr/bin/mkswap /dev/{{ vg }}/vl_{{ item.0 }} && /usr/bin/swapon /dev/{{ vg }}/vl_{{ item.0 }}"
+  when: item.1.type == "swap"
+  with_indexed_items: storage.volumes
+
+- name: "Mount volumes"
+  mount:
+    name: "/mnt{{ item.1.mount }}"
+    src: "/dev/{{ vg }}/vl_{{ item.0 }}"
+    fstype: "{{ item.1.type }}"
+    opts: defaults
+    state: mounted
+  when: item.1.type != "swap"
+  with_indexed_items: storage.volumes
