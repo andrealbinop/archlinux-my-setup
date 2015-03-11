@@ -3,3 +3,4 @@
   vars_files: ['../config.yml']
   tasks:
     - include: locale.yml
+    - include: boot.yml

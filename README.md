@@ -14,7 +14,8 @@ Scripts, guides and everything needed to properly configure a linux operating sy
 - Boot the system with the [live media](https://www.archlinux.org/download/).
 - Install [git](https://wiki.archlinux.org/index.php/Git) client and clone this project:
 ``` shell
-pacman -Sy git && git clone https://github.com/andreptb/archlinux-my-setup.git
+pacman -Sy git
+git clone https://github.com/andreptb/archlinux-my-setup.git
 ```
 - Review the **storage** and **locale** sections of [config.yml](config.yml). When you're done run:
 ``` shell

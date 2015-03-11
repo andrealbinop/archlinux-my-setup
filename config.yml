@@ -1,22 +1,21 @@
-# partitions are created using ansible lvol module. See here for more information: http://docs.ansible.com/lvol_module.html
+# https://wiki.archlinux.org/index.php/beginners%27_guide#Prepare_the_storage_devices
 storage:
   # partition table for device /dev/sda. Use lsblk to know the disks available.
   name: /dev/sda
-  # partition scheme: http://www.gnu.org/software/parted/manual/html_node/mklabel.html
-  scheme: gpt
-  # boot configuration. If not declared no boot system will be configured
-  boot:
-    # boot environment. Can be bios or uefi. Defaults to uefi
-    environment: uefi
-    # boot manager to install. Can be grub or syslinux. Defaults to syslinux
-    manager: syslinux
-    # volumes for disk.
   volumes:
     - { size: '1g', type: 'swap' }
     - { size: '10g', type: 'ext4', mount: '/' }
+    - { size: '512m', type: 'ext4', mount: '/boot' }
     - { size: '100%FREE', type: 'ext4', mount: '/home' }
 
-# locales to be enabled. Note that the first one will be exported to LANG: https://wiki.archlinux.org/index.php/beginners%27_guide#Locale
+#https://wiki.archlinux.org/index.php/beginners%27_guide#Locale
 locale:
-  - 'en_US.UTF-8 UTF-8'
-  - 'pt_BR.UTF-8 UTF-8'
+  # languages to be enabled. Note that the first one will be exported to LANG: https://wiki.archlinux.org/index.php/beginners%27_guide#Locale
+  languages:
+    - 'en_US.UTF-8 UTF-8'
+    - 'pt_BR.UTF-8 UTF-8'
+  keymap: br-abnt2
+  font: Lat2-Terminus16
+  timezone: Brazil/East
+
+ansible_python_interpreter: /usr/bin/python2

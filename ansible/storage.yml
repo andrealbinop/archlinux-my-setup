@@ -1,16 +1,13 @@
 ---
 - name: "Creates partition table on storage"
-  command: "{{ parted_exec }} {{ storage.name }} mklabel {{ storage.scheme }}"
-
-- name: "Creates an EFI boot system partition"
-  shell: "{{ parted_exec }} {{ storage.name }} mkpart esp fat32 1M 513M && {{ parted_exec }} {{ storage.name }} set 1 boot on"
+  command: "/bin/parted -s {{ storage.name }} mklabel msdos"
 
 - name: "Creates physical partition with 513M offset and enables LVM, filling all the remaining space."
-  shell: "{{ parted_exec }} {{ storage.name }} mkpart primary ext4 513M 100% && {{ parted_exec }} {{ storage.name }} set 2 lvm on"
+  shell: "/bin/parted -s {{ storage.name }} mkpart primary ext4 1M 100% && /bin/parted -s {{ storage.name }} set 1 lvm on"
 
-- name: "Creates a volume group for each physical partition."
+- name: "Creates a volume group for the physical partition."
   lvg:
-    pvs: "{{ storage.name }}2"
+    pvs: "{{ storage.name }}1"
     vg: "{{ vg }}"
     force: yes
 

@@ -4,12 +4,24 @@
     dest: /etc/locale.gen
     regexp: "^#{{ item }}.*"
     line: "{{ item }}"
-  with_items: locales
+  with_items: locale.languages
 
-- name: "Exports first configured locale"
-  command: "export LANG={{ item.1.split(' ')[0] }}"
-    dest: /etc/locale.gen
-    regexp: "^#{{ item }}.*"
-    line: "{{ item }}"
-  when: item.0 == '0'
-  with_indexed_items: locales
+- name: "Exports first configured locale to /etc/locale.conf"
+  lineinfile:
+    dest: /etc/locale.conf
+    line: "LANG={{ item.1.split(' ')[0] }}"
+    create: yes
+  when: item.0 == 0
+  with_items: locale.languages
+
+- name: "Writes /etc/vconsole.conf"
+  lineinfile:
+    dest: /etc/vconsole.conf
+    line: "KEYMAP={{ locale.keymap }}\nFONT={{ locale.font }}"
+    create: yes
+
+- name: "Configures timezone"
+  file:
+    path: /etc/localtime
+    src: "/usr/share/zoneinfo/{{ locale.timezone }}"
+    state: link

@@ -1,0 +1,33 @@
+---
+- name: "Install grub package manager"
+  pacman: "name={{ item }}"
+  with_items:
+    - grub
+    - lvm2
+
+- name: "Sets lv_metad=0 before grub install"
+  lineinfile:
+    dest: /etc/lvm/lvm.conf
+    regexp: "^use_lvmetad = 1$"
+    line: "use_lvmetad = 0"
+
+- name: "Add lvm hook in /etc/mkinitcpio.conf"
+  lineinfile:
+    dest: /etc/mkinitcpio.conf
+    regexp: "HOOKS=\"base udev autodetect modconf block filesystems keyboard fsck\"$"
+    line: "HOOKS=\"base udev autodetect modconf block lvm2 filesystems keyboard fsck\""
+
+- name: "Generates ramdisk with mkinitcpio"
+  command: /bin/mkinitcpio -p linux chdir=/boot
+
+- name: "Runs grub install on storage"
+  command: "/bin/grub-install --modules=\"lvm\" --target=i386-pc --recheck {{ storage.name }}"
+
+- name: "Generates grub.cfg"
+  command: "/bin/grub-mkconfig -o /boot/grub/grub.cfg"
+
+- name: "Sets lv_metad=1 after grub install"
+  lineinfile:
+    dest: /etc/lvm/lvm.conf
+    regexp: "^use_lvmetad = 0$"
+    line: "use_lvmetad = 1"
