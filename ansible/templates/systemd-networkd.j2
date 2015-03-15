@@ -1,0 +1,7 @@
+[Match]
+Name={{ item.name }}
+
+[Network]
+{% if item.address == 'dhcp' %}
+DHCP=v4
+{% endif %}

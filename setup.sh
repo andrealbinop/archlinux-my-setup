@@ -1,15 +1,16 @@
 #/bin/bash
 
-ANSIBLE_EXEC="ansible-playbook -c local"
+ANSIBLE_EXEC="ansible-playbook -vvv -c local"
 ANSIBLE_HOSTS=/etc/ansible/hosts
 SCRIPTS_DIR=$(readlink -m "$(dirname $0)")
 INSTALL_DIR=/mnt
 
 # installs and configure ansible
+echo "localhost" > $ANSIBLE_HOSTS
+ln -s /bin/python2 /bin/python
 ansible &>/dev/null
 if [ $? != 1 ]; then
   pacman -Sy --noconfirm ansible
-  echo "localhost" > $ANSIBLE_HOSTS
 fi
 
 # runs pre install steps
@@ -25,6 +26,7 @@ if [ ! -d "$CHROOT_SCRIPTS_DIR" ]; then
   mount --bind $SCRIPTS_DIR $CHROOT_SCRIPTS_DIR
   mount -o remount,ro $CHROOT_SCRIPTS_DIR
   echo "localhost" > "$INSTALL_DIR$ANSIBLE_HOSTS"
+  arch-chroot $INSTALL_DIR ln -s /bin/python2 /bin/python
 fi
 
 # runs ansible install script while chrooted

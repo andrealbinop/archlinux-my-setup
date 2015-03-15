@@ -1,6 +1,6 @@
 ---
 - name: "Installs base system using pacstrap"
-  command: /usr/bin/pacstrap /mnt base base-devel ansible
+  command: /usr/bin/pacstrap /mnt base base-devel ansible openssh
 
 - name: "Populates base system fstab with configured storage devices"
   shell: /usr/bin/genfstab -U -p /mnt >> /mnt/etc/fstab

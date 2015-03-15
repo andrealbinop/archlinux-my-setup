@@ -1,0 +1,9 @@
+---
+- name: "Copies template file to temp dir"
+  copy: src=templates/systemd-networkd.j2 dest=/tmp/systemd-networkd.j2
+
+- name: "Creates network configuration"
+  template:
+    src: /tmp/systemd-networkd.j2
+    dest: "/etc/systemd/network/{{ item.name }}.network"
+  with_items: network

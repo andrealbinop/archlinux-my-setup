@@ -1,3 +1,7 @@
+# https://wiki.archlinux.org/index.php/Network_configuration
+network:
+  - { name: 'enp0s3', address: 'dhcp' }
+
 # https://wiki.archlinux.org/index.php/beginners%27_guide#Prepare_the_storage_devices
 storage:
   # partition table for device /dev/sda. Use lsblk to know the disks available.
@@ -17,5 +21,3 @@ locale:
   keymap: br-abnt2
   font: Lat2-Terminus16
   timezone: Brazil/East
-
-ansible_python_interpreter: /usr/bin/python2

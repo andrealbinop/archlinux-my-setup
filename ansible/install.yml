@@ -2,5 +2,6 @@
 - hosts: all
   vars_files: ['../config.yml']
   tasks:
+    - include: network.yml
     - include: locale.yml
     - include: boot.yml
