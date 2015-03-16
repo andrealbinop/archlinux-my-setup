@@ -6,11 +6,11 @@ SCRIPTS_DIR=$(readlink -m "$(dirname $0)")
 INSTALL_DIR=/mnt
 
 # installs and configure ansible
-echo "localhost" > $ANSIBLE_HOSTS
 ln -s /bin/python2 /bin/python
 ansible &>/dev/null
 if [ $? != 1 ]; then
   pacman -Sy --noconfirm ansible
+  echo "localhost" > $ANSIBLE_HOSTS
 fi
 
 # runs pre install steps
