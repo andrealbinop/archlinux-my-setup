@@ -7,7 +7,7 @@ Scripts, guides and everything needed to properly configure a linux operating sy
 
 #### Pre-requisites
 - Bootable [ArchLinux image](https://www.archlinux.org/download/). Click [here](https://wiki.archlinux.org/index.php/USB_flash_installation_media) for instructions on how to create a bootable USB.
-- Internet access is required. Check here [here](https://wiki.archlinux.org/index.php/beginners%27_guide#Establish_an_internet_connection) for more information.
+- Internet access is required. Check  [here](https://wiki.archlinux.org/index.php/beginners%27_guide#Establish_an_internet_connection) for more information.
 
 #### 1. Install the base system
 
@@ -23,4 +23,8 @@ git clone https://github.com/andreptb/archlinux-my-setup.git
 - Review the **storage** and **locale** sections of [config.yml](config.yml). When you're done run:
 ``` shell
 ./archlinux-my-setup/setup.sh
+```
+- After the base installation the system will reboot. Use the configured storage to boot. Log with any configured user and run the following to complete the installation:
+``` shell
+/archlinux-my-setup/post_setup.sh
 ```
