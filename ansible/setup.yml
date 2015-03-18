@@ -1,0 +1,8 @@
+---
+- hosts: all
+  vars_files: ['archlinux.yml', '../config.yml']
+  tasks:
+    - include: network.yml
+    - include: locale.yml
+    - include: users.yml
+    - include: boot.yml

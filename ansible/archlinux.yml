@@ -1,0 +1,4 @@
+# file containing misc variables used in an archlinux installation process
+
+parted_exec: /usr/bin/parted -s
+mkswap_exec: /usr/bin/mkswap

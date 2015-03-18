@@ -1,9 +1,12 @@
 ---
-- name: "Copies template file to temp dir"
-  copy: src=templates/systemd-networkd.j2 dest=/tmp/systemd-networkd.j2
+- name: "Enables systemd.networkd service"
+  service: name=systemd-networkd.service enabled=yes
 
-- name: "Creates network configuration"
+- name: "Copies template file to temp dir"
+  copy: src=resources/systemd-networkd.j2 dest=/tmp/systemd-networkd.j2
+
+- name: "Creates network configuration for each device"
   template:
     src: /tmp/systemd-networkd.j2
     dest: "/etc/systemd/network/{{ item.name }}.network"
-  with_items: network
+  with_items: network.interfaces

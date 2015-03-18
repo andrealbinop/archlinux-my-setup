@@ -1,0 +1,20 @@
+---
+- name: "Creates user"
+  user:
+    name: "{{ item.name }}"
+    password: "{{ item.password }}"
+    shell: "{{ item.shell | default('/bin/bash') }}"
+  with_items: users
+
+- name: "Updates users primary groups"
+  user:
+    name: "{{ item.name }}"
+    group: "{{ item.groups.split(',')[0] | default('users') }}"
+  with_items: users
+
+- name: "Updates users with additional groups"
+  user:
+    name: "{{ item.name }}"
+    groups: "{{ item.groups.split(',')[1:] | join(',') }}"
+  when: "{{ item.groups.split(',') | length }} > 1"
+  with_items: users

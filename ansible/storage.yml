@@ -1,9 +1,9 @@
 ---
 - name: "Creates partition table on storage"
-  command: "/bin/parted -s {{ storage.name }} mklabel msdos"
+  command: "{{ parted_exec }} {{ storage.name }} mklabel msdos"
 
 - name: "Creates physical partition with 513M offset and enables LVM, filling all the remaining space."
-  shell: "/bin/parted -s {{ storage.name }} mkpart primary ext4 1M 100% && /bin/parted -s {{ storage.name }} set 1 lvm on"
+  shell: "{{ parted_exec }} {{ storage.name }} mkpart primary ext4 1M 100% && {{ parted_exec }} {{ storage.name }} set 1 lvm on"
 
 - name: "Creates a volume group for the physical partition."
   lvg:
@@ -26,7 +26,7 @@
   with_indexed_items: storage.volumes
 
 - name: "Setup swap partition"
-  shell: "/usr/bin/mkswap /dev/{{ vg }}/vl_{{ item.0 }} && /usr/bin/swapon /dev/{{ vg }}/vl_{{ item.0 }}"
+  shell: "{{ mkswap_exec }} /dev/{{ vg }}/vl_{{ item.0 }} && /usr/bin/swapon /dev/{{ vg }}/vl_{{ item.0 }}"
   when: item.1.type == "swap"
   with_indexed_items: storage.volumes
 

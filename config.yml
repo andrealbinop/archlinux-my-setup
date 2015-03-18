@@ -1,6 +1,13 @@
 # https://wiki.archlinux.org/index.php/Network_configuration
 network:
-  - { name: 'enp0s3', address: 'dhcp' }
+  interfaces:
+    - { name: 'enp0s3', address: 'dhcp' }
+    #- { name: 'enp1s3', address: '172.23.21.143', mask: '255.255.255.0', gateway: '172.23.21.254' }
+  # if ommitted DNS auto configuration will be applied, see DNS section in: https://wiki.archlinux.org/index.php/Systemd-networkd#Basic_DHCP_network
+  #dns:
+  #  - 172.23.1.1
+  #  - 172.23.1.10
+
 
 # https://wiki.archlinux.org/index.php/beginners%27_guide#Prepare_the_storage_devices
 storage:
@@ -12,7 +19,7 @@ storage:
     - { size: '512m', type: 'ext4', mount: '/boot' }
     - { size: '100%FREE', type: 'ext4', mount: '/home' }
 
-#https://wiki.archlinux.org/index.php/beginners%27_guide#Locale
+# https://wiki.archlinux.org/index.php/beginners%27_guide#Locale
 locale:
   # languages to be enabled. Note that the first one will be exported to LANG: https://wiki.archlinux.org/index.php/beginners%27_guide#Locale
   languages:
@@ -21,3 +28,9 @@ locale:
   keymap: br-abnt2
   font: Lat2-Terminus16
   timezone: Brazil/East
+
+# https://wiki.archlinux.org/index.php/users_and_groups
+# The first user's group declared will be configured as primary
+# new user, possible params: http://docs.ansible.com/user_module.html
+users:
+  - { name: 'vagrant', groups: 'adm,users,wheel', password: '$6$rounds=100000$4qfmUuShRlw2NzbH$Mk1eI65Z2oKoj66QKohNnl05iByh3sQ4pUlEXGKE3xrYKMyR5xZ.b.7EY1MrKkqTWX7dE91zAUHyi4Eu1DBwi0' }

@@ -12,9 +12,12 @@ Scripts, guides and everything needed to properly configure a linux operating sy
 #### 1. Install the base system
 
 - Boot the system with the [live media](https://www.archlinux.org/download/).
-- Install [git](https://wiki.archlinux.org/index.php/Git) client and clone this project:
+- Install [git](https://wiki.archlinux.org/index.php/Git) and [ansible](https://www.archlinux.org/packages/community/any/ansible/):
 ``` shell
-pacman -Sy git
+pacman -Sy --noconfirm ansible git
+```
+- Clone archlinux-my-setup project:
+``` shell
 git clone https://github.com/andreptb/archlinux-my-setup.git
 ```
 - Review the **storage** and **locale** sections of [config.yml](config.yml). When you're done run:
