@@ -2,11 +2,7 @@
 network:
   interfaces:
     - { name: 'enp0s3', address: 'dhcp' }
-    #- { name: 'enp1s3', address: '172.23.21.143', mask: '255.255.255.0', gateway: '172.23.21.254' }
-  # if ommitted DNS auto configuration will be applied, see DNS section in: https://wiki.archlinux.org/index.php/Systemd-networkd#Basic_DHCP_network
-  #dns:
-  #  - 172.23.1.1
-  #  - 172.23.1.10
+
 
 
 # https://wiki.archlinux.org/index.php/beginners%27_guide#Prepare_the_storage_devices
@@ -29,8 +25,10 @@ locale:
   font: Lat2-Terminus16
   timezone: Brazil/East
 
-# https://wiki.archlinux.org/index.php/users_and_groups
-# The first user's group declared will be configured as primary
-# new user, possible params: http://docs.ansible.com/user_module.html
+#  User section, instructions, please note the following:
+#  - Most params are managed by ansible users module: http://docs.ansible.com/user_module.html
+#  - The 'sudo' special param may have the following values: no (default), yes (allows sudo with password) and passwordless (allows sudo without informing password)
+#  - The 'root' user allows a special param named 'ssh', which enables (or disables) ssh login. Default is 'no'.
 users:
-  - { name: 'vagrant', groups: 'adm,users,wheel', password: '$6$rounds=100000$4qfmUuShRlw2NzbH$Mk1eI65Z2oKoj66QKohNnl05iByh3sQ4pUlEXGKE3xrYKMyR5xZ.b.7EY1MrKkqTWX7dE91zAUHyi4Eu1DBwi0' }
+  - { name: 'root', ssh: 'no', password: '$6$rounds=100000$nE29QdsJf.NuSuXJ$3yCvDNN6kBP42A50V1DjfNOI0Syw71jV3fbCkzYPjWZu6f.zsgQMrfiSjzm1TTzxOlufCUX.faut.uFJaZckv/' }
+  - { name: 'vagrant', groups: 'adm,users', sudo: 'passwordless', password: '$6$rounds=100000$4qfmUuShRlw2NzbH$Mk1eI65Z2oKoj66QKohNnl05iByh3sQ4pUlEXGKE3xrYKMyR5xZ.b.7EY1MrKkqTWX7dE91zAUHyi4Eu1DBwi0' }

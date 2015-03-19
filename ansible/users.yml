@@ -10,11 +10,34 @@
   user:
     name: "{{ item.name }}"
     group: "{{ item.groups.split(',')[0] | default('users') }}"
+  when: item.groups is defined
   with_items: users
 
 - name: "Updates users with additional groups"
   user:
     name: "{{ item.name }}"
     groups: "{{ item.groups.split(',')[1:] | join(',') }}"
-  when: "{{ item.groups.split(',') | length }} > 1"
+  when: item.groups is defined and item.groups.split(',') | length > 1
+  with_items: users
+
+- name: "Adds users to sudoers"
+  lineinfile:
+    dest: /etc/sudoers
+    line: "{{ item.name }}   ALL=(ALL) ALL"
+  when: item.sudo is defined and item.sudo == 'yes' or item.sudo == 'passwordless'
+  with_items: users
+
+- name: "Disables authentication for sudo command to sudoers"
+  lineinfile:
+    dest: /etc/sudoers
+    line: "Defaults:{{ item.name }}      !authenticate"
+  when: item.sudo is defined and item.sudo == 'passwordless'
+  with_items: users
+
+- name: "Disable root ssh login if necessary"
+  lineinfile:
+    dest: /etc/ssh/sshd_config
+    regexp: "^#PermitRootLogin yes.*"
+    line: "PermitRootLogin no"
+  when: item.name == 'root' and ( item.ssh is not defined or item.ssh == 'yes' )
   with_items: users

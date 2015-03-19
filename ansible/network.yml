@@ -2,6 +2,9 @@
 - name: "Enables systemd.networkd service"
   service: name=systemd-networkd.service enabled=yes
 
+- name: "Enables sshd.service"
+  service: name=sshd.service enabled=yes
+
 - name: "Copies template file to temp dir"
   copy: src=resources/systemd-networkd.j2 dest=/tmp/systemd-networkd.j2
 

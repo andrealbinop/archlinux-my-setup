@@ -20,7 +20,7 @@ pacman -Sy --noconfirm ansible git
 ``` shell
 git clone https://github.com/andreptb/archlinux-my-setup.git
 ```
-- Review the **storage** and **locale** sections of [config.yml](config.yml). When you're done run:
+- Review the [config.yml](config.yml) file. When you're done run:
 ``` shell
 ./archlinux-my-setup/setup.sh
 ```
