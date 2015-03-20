@@ -1,3 +1,0 @@
----
-- name: "Instalar ambiente de desenvolvimento"
-  pacman: pkg=java 
