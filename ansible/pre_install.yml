@@ -1,6 +1,0 @@
----
-- hosts: all
-  vars_files: ['../config.yml']
-  tasks:
-    - { include: storage.yml, vg: "vg_{{ storage.name.split('/')[-1] }}" }
-    - include: pacstrap.yml
