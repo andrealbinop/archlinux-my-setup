@@ -39,5 +39,5 @@
     dest: /etc/ssh/sshd_config
     regexp: "^#PermitRootLogin yes.*"
     line: "PermitRootLogin no"
-  when: item.name == 'root' and ( item.ssh is not defined or item.ssh == 'yes' )
+  when: item.name == 'root' and ( item.ssh is not defined or item.ssh == 'no' )
   with_items: users

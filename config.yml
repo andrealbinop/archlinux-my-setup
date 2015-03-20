@@ -1,9 +1,8 @@
 # https://wiki.archlinux.org/index.php/Network_configuration
 network:
   interfaces:
-    - { name: 'enp0s3', address: 'dhcp' }
-
-
+    #- { name: 'enp0s3', address: 'dhcp' }
+    - { name: 'enp0s3', address: '172.23.21.143', gateway: '172.23.21.254', dns: '172.23.1.1,172.23.1.10', domain: 'softplan.com.br' }
 
 # https://wiki.archlinux.org/index.php/beginners%27_guide#Prepare_the_storage_devices
 storage:
