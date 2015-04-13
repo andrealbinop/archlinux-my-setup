@@ -1,0 +1,27 @@
+---
+- name: "Installs smbclient"
+  pacman: name=smbclient
+
+- name: "Creates credentials file"
+  template:
+    src: resources/smb_credentials.j2
+    dest: "/root/.{{ item.src | regex_replace('/+', '_') }}.creds"
+    mode: "600"
+  when: samba.mount is defined
+  with_items: samba.mount
+
+- name: "Create share dirs"
+  file: path={{ item.path }} group=users mode="g+rwx" state=directory
+  when: samba.mount is defined
+  with_items: samba.mount
+
+
+- name: "Mount share dirs"
+  mount:
+    name: "{{ item.path }}"
+    src: "{{ item.src }}"
+    fstype: cifs
+    opts: "rw,credentials=/root/.{{ item.src | regex_replace('/+', '_') }}.creds,iocharset=utf8,file_mode=0777,dir_mode=077"
+    state: mounted
+  when: samba.mount is defined
+  with_items: samba.mount

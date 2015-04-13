@@ -3,3 +3,5 @@
   vars_files: ['../config.yml']
   tasks:
     - include: dns.yml
+    - include: samba.yml
+      when: samba is defined and samba.mount is defined

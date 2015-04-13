@@ -2,3 +2,4 @@
 
 parted_exec: /usr/bin/parted -s
 mkswap_exec: /usr/bin/mkswap
+locale_gen_exec: /usr/bin/locale-gen

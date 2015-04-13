@@ -2,7 +2,7 @@
 network:
   interfaces:
     #- { name: 'enp0s3', address: 'dhcp' }
-    - { name: 'enp0s3', address: '172.23.21.143', gateway: '172.23.21.254', dns: '172.23.1.1,172.23.1.10', domain: 'softplan.com.br' }
+    - { name: 'enp0s3', address: '10.0.0.2', gateway: '10.0.0.1', dns: '10.0.0.1, 10.0.0.2', domain: 'mydomain.com' }
 
 # https://wiki.archlinux.org/index.php/beginners%27_guide#Prepare_the_storage_devices
 storage:
@@ -18,8 +18,8 @@ storage:
 locale:
   # languages to be enabled. Note that the first one will be exported to LANG: https://wiki.archlinux.org/index.php/beginners%27_guide#Locale
   languages:
-    - 'en_US.UTF-8 UTF-8'
     - 'pt_BR.UTF-8 UTF-8'
+    - 'en_US.UTF-8 UTF-8'    
   keymap: br-abnt2
   font: Lat2-Terminus16
   timezone: Brazil/East
@@ -31,3 +31,8 @@ locale:
 users:
   - { name: 'root', ssh: 'no', password: '$6$rounds=100000$nE29QdsJf.NuSuXJ$3yCvDNN6kBP42A50V1DjfNOI0Syw71jV3fbCkzYPjWZu6f.zsgQMrfiSjzm1TTzxOlufCUX.faut.uFJaZckv/' }
   - { name: 'vagrant', groups: 'adm,users', sudo: 'passwordless', password: '$6$rounds=100000$4qfmUuShRlw2NzbH$Mk1eI65Z2oKoj66QKohNnl05iByh3sQ4pUlEXGKE3xrYKMyR5xZ.b.7EY1MrKkqTWX7dE91zAUHyi4Eu1DBwi0' }
+
+# https://wiki.archlinux.org/index.php/Samba#Client_configuration
+# samba:
+#   mount:
+#     - { path: '/mnt/share', src: '//myserver/sharename', username: 'username', password: 'password' }
