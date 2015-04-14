@@ -4,4 +4,7 @@ Name={{ item.name }}
 [Network]
 {% if item.address == 'dhcp' %}
 DHCP=v4
+{% else %}
+Address={{ item.address }}
 {% endif %}
+Gateway={{ item.gateway }}
