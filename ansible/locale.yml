@@ -1,10 +1,9 @@
 ---
 - name: "Enable locales on /etc/locale.gen"
-  lineinfile:
+  replace:
     dest: /etc/locale.gen
-    regexp: "^#{{ item }}.*"
-    line: "{{ item }}"
-    insertafter: no
+    regexp: "^#{{ item }}.*$"
+    replace: "{{ item }}"
   with_items: locale.languages
 
 - name: "Exports first configured locale to /etc/locale.conf"

@@ -1,0 +1,13 @@
+---
+  - name: "updates pacman cache"
+    pacman:  update_cache=yes
+
+  - name: "install packages from official repository"
+    pacman: name={{item}}
+    with_items: packages.official
+    when: packages.official is defined
+
+  - name: "install packages from aur repository"
+    command: "{{ yaourt_exec }} {{item}}"
+    with_items: packages.aur
+    when: packages.aur is defined

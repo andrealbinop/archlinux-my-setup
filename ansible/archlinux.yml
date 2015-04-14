@@ -1,5 +1,9 @@
 # file containing misc variables used in an archlinux installation process
 
+grep_exec: /usr/bin/grep
 parted_exec: /usr/bin/parted -s
 mkswap_exec: /usr/bin/mkswap
 locale_gen_exec: /usr/bin/locale-gen
+yaourt_exec: /usr/bin/yaourt -S --noconfirm --cachedir /archlinux-my-setup/tmp
+pacman_exec: /usb/bin/pacman --noconfirm
+makepkg_exec: /usr/bin/makepkg

@@ -35,9 +35,9 @@
   with_items: users
 
 - name: "Disable root ssh login if necessary"
-  lineinfile:
+  replace:
     dest: /etc/ssh/sshd_config
     regexp: "^#PermitRootLogin yes.*"
-    line: "PermitRootLogin no"
+    replace: "PermitRootLogin no"
   when: item.name == 'root' and ( item.ssh is not defined or item.ssh == 'no' )
   with_items: users

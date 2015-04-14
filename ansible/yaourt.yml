@@ -1,0 +1,22 @@
+---
+  # https://github.com/vvo/ansible-archee/blob/master/roles/base/tasks/install-yaourt.yml
+  - name: "add archlinuxfr repository to pacman"
+    lineinfile:
+      dest: "/etc/pacman.conf"
+      state: "present"
+      line: "{{ item }}"
+    with_items:
+      - "[archlinuxfr]"
+      - "SigLevel = Never"
+      - "Server = http://repo.archlinux.fr/$arch"
+
+  - name: "install yaourt using pacman"
+    pacman: name=yaourt update_cache=yes
+
+  - name: "downloads makepkg patch to work with sudo"
+    get_url: url=https://gist.githubusercontent.com/dalu/6cdda7e0376f602f97de/raw/3690d1d2d7627b4befe2d7ddff8fa20ecfe775ab/makepkg-asroot-4.2.0.diff dest=/tmp/makepkg.patch
+
+  - name: "patches makepkg to work with sudo"
+    patch: >
+      src=/tmp/makepkg.patch
+      dest={{ makepkg_exec }}

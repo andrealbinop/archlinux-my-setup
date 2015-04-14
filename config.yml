@@ -1,8 +1,8 @@
 # https://wiki.archlinux.org/index.php/Network_configuration
 network:
   interfaces:
-    #- { name: 'enp0s3', address: 'dhcp' }
-    - { name: 'enp0s3', address: '10.0.0.2', gateway: '10.0.0.1', dns: '10.0.0.1, 10.0.0.2', domain: 'mydomain.com' }
+    - { name: 'enp0s3', address: 'dhcp' }
+    #- { name: 'enp0s3', address: '10.0.0.2', gateway: '10.0.0.1', dns: '10.0.0.1, 10.0.0.2', domain: 'mydomain.com' }
 
 # https://wiki.archlinux.org/index.php/beginners%27_guide#Prepare_the_storage_devices
 storage:
@@ -10,7 +10,7 @@ storage:
   name: /dev/sda
   volumes:
     - { size: '1g', type: 'swap' }
-    - { size: '10g', type: 'ext4', mount: '/' }
+    - { size: '20g', type: 'ext4', mount: '/' }
     - { size: '512m', type: 'ext4', mount: '/boot' }
     - { size: '100%FREE', type: 'ext4', mount: '/home' }
 
@@ -19,7 +19,7 @@ locale:
   # languages to be enabled. Note that the first one will be exported to LANG: https://wiki.archlinux.org/index.php/beginners%27_guide#Locale
   languages:
     - 'pt_BR.UTF-8 UTF-8'
-    - 'en_US.UTF-8 UTF-8'    
+    - 'en_US.UTF-8 UTF-8'
   keymap: br-abnt2
   font: Lat2-Terminus16
   timezone: Brazil/East
@@ -36,3 +36,15 @@ users:
 # samba:
 #   mount:
 #     - { path: '/mnt/share', src: '//myserver/sharename', username: 'username', password: 'password' }
+
+packages:
+  # https://www.archlinux.org/packages/
+  official:
+    - vim
+    - wget
+    - zsh
+    - git
+    - nodejs
+  # https://aur.archlinux.org/packages
+  aur:
+    - jre
