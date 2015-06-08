@@ -2,7 +2,10 @@
 Description={{ item.description }}
 
 [Service]
+{% if item.before is defined %}
+Before={{ item.before }}
+{% endif %}
+{% if item.type is defined %}
+Type={{ item.type }}
+{% endif %}
 ExecStart={{ item.exec }}
-
-[Install]
-WantedBy={{ item.wantedby }}

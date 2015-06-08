@@ -8,11 +8,12 @@ network:
 storage:
   # partition table for device /dev/sda. Use lsblk to know the disks available.
   name: /dev/sda
+  # physical space to use, considering remaining space left on device. Default: 100%
+  use: 50%
   volumes:
-    - { size: '1g', type: 'swap' }
-    - { size: '20g', type: 'ext4', mount: '/' }
+    - { size: '6g', type: 'swap' }
     - { size: '512m', type: 'ext4', mount: '/boot' }
-    - { size: '100%FREE', type: 'ext4', mount: '/home' }
+    - { size: '100%FREE', type: 'ext4', mount: '/' }
 
 # https://wiki.archlinux.org/index.php/beginners%27_guide#Locale
 locale:
@@ -30,7 +31,7 @@ locale:
 #  - The 'root' user allows a special param named 'ssh', which enables (or disables) ssh login. Default is 'no'.
 users:
   - { name: 'root', ssh: 'no', password: '$6$rounds=100000$nE29QdsJf.NuSuXJ$3yCvDNN6kBP42A50V1DjfNOI0Syw71jV3fbCkzYPjWZu6f.zsgQMrfiSjzm1TTzxOlufCUX.faut.uFJaZckv/' }
-  - { name: 'vagrant', groups: 'adm,users', sudo: 'passwordless', password: '$6$rounds=100000$4qfmUuShRlw2NzbH$Mk1eI65Z2oKoj66QKohNnl05iByh3sQ4pUlEXGKE3xrYKMyR5xZ.b.7EY1MrKkqTWX7dE91zAUHyi4Eu1DBwi0' }
+  - { name: 'andre', groups: 'adm,users', sudo: 'passwordless', password: '$6$rounds=100000$nE29QdsJf.NuSuXJ$3yCvDNN6kBP42A50V1DjfNOI0Syw71jV3fbCkzYPjWZu6f.zsgQMrfiSjzm1TTzxOlufCUX.faut.uFJaZckv/' }
 
 # https://wiki.archlinux.org/index.php/Samba#Client_configuration
 # samba:
@@ -40,11 +41,12 @@ users:
 packages:
   # https://www.archlinux.org/packages/
   official:
+    - ssh
     - vim
     - wget
     - zsh
     - git
-    - nodejs
-  # https://aur.archlinux.org/packages
-  aur:
-    - jre
+    - lightdm
+    - lightdm-gtk-greeter
+    - cinnamon
+    - docker

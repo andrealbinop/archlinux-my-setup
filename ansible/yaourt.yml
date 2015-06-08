@@ -10,8 +10,11 @@
       - "SigLevel = Never"
       - "Server = http://repo.archlinux.fr/$arch"
 
+  - name: "update pacman cache for yaourt"
+    pacman: update_cache=yes
+
   - name: "install yaourt using pacman"
-    pacman: name=yaourt update_cache=yes
+    pacman: name=yaourt
 
   - name: "downloads makepkg patch to work with sudo"
     get_url: url=https://gist.githubusercontent.com/dalu/6cdda7e0376f602f97de/raw/3690d1d2d7627b4befe2d7ddff8fa20ecfe775ab/makepkg-asroot-4.2.0.diff dest=/tmp/makepkg.patch

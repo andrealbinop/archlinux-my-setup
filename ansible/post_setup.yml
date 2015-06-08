@@ -2,8 +2,10 @@
 - hosts: all
   vars_files: ['archlinux.yml', '../config.yml']
   tasks:
-    - include: dns.yml
+    - include: network.yml
+      when: network is defined
     - include: samba.yml
       when: samba is defined and samba.mount is defined
     - include: packages.yml
       when: packages is defined
+    - include: cleanup.yml

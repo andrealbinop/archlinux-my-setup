@@ -4,6 +4,15 @@
     name: "{{ item.name }}"
     password: "{{ item.password }}"
     shell: "{{ item.shell | default('/bin/bash') }}"
+    home: "{{ item.home | default('/home/' + item.name) }}"
+  when: item.name != 'root'
+  with_items: users
+
+- name: "Changes root password"
+  user:
+    name: "{{ item.name }}"
+    password: "{{ item.password }}"
+  when: item.name == 'root'
   with_items: users
 
 - name: "Updates users primary groups"
@@ -40,4 +49,4 @@
     regexp: "^#PermitRootLogin yes.*"
     replace: "PermitRootLogin no"
   when: item.name == 'root' and ( item.ssh is not defined or item.ssh == 'no' )
-  with_items: users
+  with_items: users 

@@ -1,0 +1,12 @@
+---
+- name: "Disables post_setup_hook.service"
+  service: name=post_setup_hook.service enabled=no
+
+- name: "Deletes installation setup files"
+  file: src={{ item }} state=absent
+  with_items:
+    - /etc/systemd/system/post_setup_hook.service
+    - /usr/lib/systemd/scripts/post_setup_hook.sh
+
+- name: "Clears pacman cache"
+  command: "paccache -r && paccache -ruk0"

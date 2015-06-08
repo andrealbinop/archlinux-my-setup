@@ -3,7 +3,7 @@
   command: "{{ parted_exec }} {{ storage.name }} mklabel msdos"
 
 - name: "Creates physical partition with 513M offset and enables LVM, filling all the remaining space."
-  shell: "{{ parted_exec }} {{ storage.name }} mkpart primary ext4 1M 100% && {{ parted_exec }} {{ storage.name }} set 1 lvm on"
+  shell: "{{ parted_exec }} {{ storage.name }} mkpart primary ext4 1M {{ storage.use | default('100%') }}  && {{ parted_exec }} {{ storage.name }} set 1 lvm on"
 
 - name: "Creates a volume group for the physical partition."
   lvg:

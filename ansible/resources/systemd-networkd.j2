@@ -1,10 +1,17 @@
-[Match]
 Name={{ item.name }}
 
 [Network]
 {% if item.address == 'dhcp' %}
-DHCP=v4
+DHCP=yes
 {% else %}
 Address={{ item.address }}
-{% endif %}
 Gateway={{ item.gateway }}
+{% endif %}
+{% if item.dns is defined %}
+{% for dns in item.dns %}
+DNS={{ dns }}
+{% endfor %}
+{% endif %}
+{% if item.domains is defined %}
+Domains={{ dns | join(",") }}
+{% endif %}

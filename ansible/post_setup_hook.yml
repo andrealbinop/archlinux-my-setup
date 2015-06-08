@@ -1,0 +1,30 @@
+---
+- name: "Copies template files to create post hook service"
+  copy: src=resources/{{ item }}.j2 dest=/tmp/{{ item }}.j2
+  with_items:
+    - systemd-service
+    - post_setup_hook
+
+- name: "Creates post setup hook script"
+  template:
+    src: /tmp/post_setup_hook.j2
+    dest: /usr/lib/systemd/scripts/post_setup_hook.sh
+    mode: 755
+
+- name: "Configures ansible.cfg for post_hook_script"
+  ini_file:
+    dest: "/root/ansible.cfg"
+    section: defaults
+    state: present
+    option: log_path
+    value: "{{ ansible_env.INSTALL_DIR }}/post_setup.log"
+
+- name: "Creates service for post setup hook"
+  template:
+    src: /tmp/systemd-service.j2
+    dest: /etc/systemd/system/post_setup_hook.service
+  with_items:
+    - { exec: "/usr/lib/systemd/scripts/post_setup_hook.sh", before: "basic.target",  type: "oneshot", description: "Hook to run post installation scripts" }
+
+- name: "Enables post_setup_hook.service"
+  service: name=post_setup_hook.service enabled=yes

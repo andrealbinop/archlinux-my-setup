@@ -1,10 +1,4 @@
 ---
-- name: "Enables systemd.networkd service"
-  service: name=systemd-networkd.service enabled=yes
-
-- name: "Enables sshd.service"
-  service: name=sshd.service enabled=yes
-
 - name: "Copies template file to temp dir"
   copy: src=resources/systemd-networkd.j2 dest=/tmp/systemd-networkd.j2
 
@@ -13,3 +7,17 @@
     src: /tmp/systemd-networkd.j2
     dest: "/etc/systemd/network/{{ item.name }}.network"
   with_items: network.interfaces
+
+- name: "Enables network services"
+  service: name={{ item }} enabled=yes state=started
+  with_items:
+    - sshd
+    - systemd-networkd
+    - systemd-resolved
+
+- name: "Creates symbolic link from /run/systemd/resolve/resolv.conf to /etc/resolv.conf"
+  file:
+    src: /run/systemd/resolve/resolv.conf
+    dest: /etc/resolv.conf
+    force: yes
+    state: link
