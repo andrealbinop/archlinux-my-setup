@@ -2,10 +2,11 @@
 - hosts: all
   vars_files: ['archlinux.yml', '../config.yml']
   tasks:
-    # - include: locale.yml
-    #   when: locale is defined
-    # - include: users.yml
-    #   when: users is defined
-    # - include: boot.yml
-    #   when: storage is defined
-    - include: post_setup_hook.yml
+    - include: locale.yml
+      when: locale is defined
+    - include: users.yml
+      when: users is defined
+    - include: boot.yml
+      when: storage is defined
+    - include: network.yml
+      when: network is defined

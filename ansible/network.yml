@@ -9,15 +9,8 @@
   with_items: network.interfaces
 
 - name: "Enables network services"
-  service: name={{ item }} enabled=yes state=started
+  service: name={{ item }} enabled=yes
   with_items:
     - sshd
-    - systemd-networkd
     - systemd-resolved
-
-- name: "Creates symbolic link from /run/systemd/resolve/resolv.conf to /etc/resolv.conf"
-  file:
-    src: /run/systemd/resolve/resolv.conf
-    dest: /etc/resolv.conf
-    force: yes
-    state: link
+    - systemd-networkd

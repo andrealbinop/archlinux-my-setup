@@ -14,4 +14,12 @@
   - name: "install packages from aur repository"
     command: "{{ yaourt_exec }} {{item}}"
     with_items: packages.aur
-    when: packages.aur is defined  
+    when: packages.aur is defined
+
+  - stat: "{{ eclipse_exec }}"
+    register: "eclipse_exec_status"
+
+  - name: "install packages for eclipse if necessary"
+    command: "{{ eclipse_exec }} -application org.eclipse.equinox.p2.director -repository {{item.repository}} -installIU {{item.feature}}"
+    with_items: packages.eclipse
+    when: eclipse_exec_status.exists and packages.eclipse is defined

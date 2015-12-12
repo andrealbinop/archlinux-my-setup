@@ -8,10 +8,10 @@ Address={{ item.address }}
 Gateway={{ item.gateway }}
 {% endif %}
 {% if item.dns is defined %}
-{% for dns in item.dns %}
-DNS={{ dns }}
+{% for address in item.dns.split(',') %}
+DNS={{ address }}
 {% endfor %}
 {% endif %}
 {% if item.domains is defined %}
-Domains={{ dns | join(",") }}
+Domains={{ item.domains }}
 {% endif %}

@@ -7,21 +7,31 @@
     src: resources/smb_credentials.j2
     dest: "/root/.{{ item.src | regex_replace('/+', '_') }}.creds"
     mode: "600"
-  when: samba.mount is defined
+  when: samba.mount is defined and item.username is defined and item.password is defined
   with_items: samba.mount
 
-- name: "Create share dirs"
+- name: "Check that share dirs exists"
   file: path={{ item.path }} group=users mode="g+rwx" state=directory
   when: samba.mount is defined
   with_items: samba.mount
 
+- name: "Mount share dirs without credentials"
+  mount:
+    name: "{{ item.path }}"
+    src: "{{ item.src }}"
+    fstype: cifs
+    opts: "rw,iocharset=utf8,file_mode=0777,dir_mode=077"
+    state: mounted
+  when: samba.mount is defined and item.username is not defined and item.password is not defined
+  with_items: samba.mount
 
-- name: "Mount share dirs"
+
+- name: "Mount share dirs that needs credentials"
   mount:
     name: "{{ item.path }}"
     src: "{{ item.src }}"
     fstype: cifs
     opts: "rw,credentials=/root/.{{ item.src | regex_replace('/+', '_') }}.creds,iocharset=utf8,file_mode=0777,dir_mode=077"
     state: mounted
-  when: samba.mount is defined
+  when: samba.mount is defined and item.username is defined and item.password is defined
   with_items: samba.mount

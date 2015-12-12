@@ -1,5 +1,6 @@
 # https://wiki.archlinux.org/index.php/Network_configuration
 network:
+  hostname: 'archlinux-vagrant'
   interfaces:
     - { name: 'enp0s3', address: 'dhcp' }
     #- { name: 'enp0s3', address: '10.0.0.2', gateway: '10.0.0.1', dns: '10.0.0.1, 10.0.0.2', domain: 'mydomain.com' }
@@ -7,13 +8,16 @@ network:
 # https://wiki.archlinux.org/index.php/beginners%27_guide#Prepare_the_storage_devices
 storage:
   # partition table for device /dev/sda. Use lsblk to know the disks available.
-  name: /dev/sda
-  # physical space to use, considering remaining space left on device. Default: 100%
-  use: 50%
-  volumes:
-    - { size: '6g', type: 'swap' }
-    - { size: '512m', type: 'ext4', mount: '/boot' }
-    - { size: '100%FREE', type: 'ext4', mount: '/' }
+  /dev/sda:
+    boot: grub
+    # storage use policy. Accepts:
+    # overwrite: Erases the disk and uses all space to create the volumes
+    # 1-100%: Creates the volumes using desired storage free space. Nothing that is already created is erased.
+    use: overwrite
+    volumes:
+      - { size: '512m', type: 'swap' }
+      - { size: '512m', type: 'ext4', mount: '/boot' }
+      - { size: '100%FREE', type: 'ext4', mount: '/' }
 
 # https://wiki.archlinux.org/index.php/beginners%27_guide#Locale
 locale:
@@ -34,19 +38,13 @@ users:
   - { name: 'andre', groups: 'adm,users', sudo: 'passwordless', password: '$6$rounds=100000$nE29QdsJf.NuSuXJ$3yCvDNN6kBP42A50V1DjfNOI0Syw71jV3fbCkzYPjWZu6f.zsgQMrfiSjzm1TTzxOlufCUX.faut.uFJaZckv/' }
 
 # https://wiki.archlinux.org/index.php/Samba#Client_configuration
-# samba:
-#   mount:
-#     - { path: '/mnt/share', src: '//myserver/sharename', username: 'username', password: 'password' }
+samba:
+  mount:
+    - { path: '/mnt/share', src: '//myserver/sharename', username: 'username', password: 'password' }
 
 packages:
   # https://www.archlinux.org/packages/
   official:
-    - ssh
     - vim
-    - wget
-    - zsh
-    - git
-    - lightdm
-    - lightdm-gtk-greeter
-    - cinnamon
-    - docker
+  aur:
+    - rar

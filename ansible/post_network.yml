@@ -1,0 +1,11 @@
+---
+- name: "Creates symbolic link from /run/systemd/resolve/resolv.conf to /etc/resolv.conf"
+  file:
+    src: /run/systemd/resolve/resolv.conf
+    dest: /etc/resolv.conf
+    force: yes
+    state: link
+
+- name: "Sets hostname"
+  hostname: name={{ network.hostname }}
+  when: network.hostname is defined

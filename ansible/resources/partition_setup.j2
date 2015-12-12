@@ -1,0 +1,12 @@
+#/bin/bash
+
+{{ parted_exec }} {{ item.key }} mkpart primary ext4 1M 100%  && {{ parted_exec }} {{ item.key }} set 1 lvm on && {{ parted_exec }} {{ item.key }} print | awk '$NF == \"lvm\" {print \"{{ item.key }}\"$1;}'
+
+{% if item.value.use == 'overwrite' %}
+{% parted_exec %} mkpart primary ext4 1M 100%
+{% else %}
+{% parted_exec %} mkpart primary ext4 0% {{ item.value.use }}
+{% endif %}
+{{ parted_exec }} {{ item.key }} set 1 lvm on
+
+PARTITION_NAME{{ parted_exec }} {{ item.key }} print | awk '$NF == \"lvm\" {print \"{{ item.key }}\"$1;}'

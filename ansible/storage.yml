@@ -1,41 +1,60 @@
 ---
-- name: "Creates partition table on storage"
-  command: "{{ parted_exec }} {{ storage.name }} mklabel msdos"
+- name: "Erases disk partition table if necessary"
+  command: "dd if=/dev/zero of={{ item.key }} bs=512 count=1 conv=notrunc"
+  when: item.value.use == 'overwrite'
+  with_dict: "{{ storage }}"
 
-- name: "Creates physical partition with 513M offset and enables LVM, filling all the remaining space."
-  shell: "{{ parted_exec }} {{ storage.name }} mkpart primary ext4 1M {{ storage.use | default('100%') }}  && {{ parted_exec }} {{ storage.name }} set 1 lvm on"
+- name: "Creates partition table on storage"
+  command: "{{ parted_exec }} {{ item.key }} mklabel msdos"
+  when: item.value.use == 'overwrite'
+  with_dict: "{{ storage }}"
+
+- name: "Creates physical partition with 513M offset and enables LVM, filling all the remaining space. Intended for overwrite use mode"
+  shell: "{{ parted_exec }} {{ item.key }} mkpart primary ext4 1M 100%  && {{ parted_exec }} {{ item.key }} set 1 lvm on && {{ parted_exec }} {{ item.key }} print | awk '$NF == \"lvm\" {print \"{{ item.key }}\"$1;}'"
+  register: item.value.partition
+  when: item.value.use == 'overwrite'
+  with_dict: "{{ storage }}"
+
+- name: "Creates physical partition with available space and enables LVM"
+  shell: "{{ parted_exec }} {{ item.key }} mkpart primary ext4 0% {{ item.value.use }}  && {{ parted_exec }} {{ item.key }} set 1 lvm on && {{ parted_exec }} {{ item.key }} print | awk '$NF == \"lvm\" {print \"{{ item.key }}\"$1;}'"
+  register: item.value.partition
+  when: item.value.use != 'overwrite'
+  with_dict: "{{ storage }}"
 
 - name: "Creates a volume group for the physical partition."
-  lvg:
-    pvs: "{{ storage.name }}1"
-    vg: "{{ vg }}"
-    force: yes
+  command: "{{ vgcreate_exec }} vg_{{ item.key.split('/')[-1] }} {{ item.value.partition }}"
+  when: item.value.partition
+  with_dict: "{{ storage }}"
 
 - name: "Creates logical partitions for each volume group for root partition"
   lvol:
-    vg: "{{ vg }}"
+    vg: "vg_{{ item.key.split('/')[-1] }}"
     lv: "vl_{{ item.0 }}"
     size: "{{ item.1.size }}"
-  with_indexed_items: storage.volumes
+  with_indexed_items: item.value.volumes
+  with_dict: "{{ storage }}"
 
 - name: "Format data values"
   filesystem:
     fstype: "{{ item.1.type }}"
-    dev: "/dev/{{ vg }}/vl_{{ item.0 }}"
+    dev: "/dev/vg_{{ item.key.split('/')[-1] }}/vl_{{ item.0 }}"
   when: item.1.type != "swap"
-  with_indexed_items: storage.volumes
+  with_indexed_items: item.value.volumes
+  with_dict: "{{ storage }}"
 
 - name: "Setup swap partition"
-  shell: "{{ mkswap_exec }} /dev/{{ vg }}/vl_{{ item.0 }} && /usr/bin/swapon /dev/{{ vg }}/vl_{{ item.0 }}"
+  shell: "{{ mkswap_exec }} /dev/vg_{{ item.key.split('/')[-1] }}/vl_{{ item.0 }} && /usr/bin/swapon /dev/vg_{{ item.key.split('/')[-1] }}/vl_{{ item.0 }}"
   when: item.1.type == "swap"
-  with_indexed_items: storage.volumes
+  with_indexed_items: item.value.volumes
+  with_dict: "{{ storage }}"
 
 - name: "Mount volumes"
   mount:
     name: "/mnt{{ item.1.mount }}"
-    src: "/dev/{{ vg }}/vl_{{ item.0 }}"
+    src: "/dev/vg_{{ item.key.split('/')[-1] }}/vl_{{ item.0 }}"
     fstype: "{{ item.1.type }}"
     opts: defaults
     state: mounted
   when: item.1.type != "swap"
-  with_indexed_items: storage.volumes
+  with_indexed_items: item.value.volumes
+  with_dict: "{{ storage }}"
