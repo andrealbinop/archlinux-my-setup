@@ -25,7 +25,7 @@
 - name: "Writes /etc/vconsole.conf"
   lineinfile:
     dest: /etc/vconsole.conf
-    line: "KEYMAP={{ locale.keymap }}\nFONT={{ locale.font }}"
+    line: "KEYMAP={{ locale.keymap }}.map.gz\nFONT={{ locale.font }}"
     create: yes
 
 - name: "Configures timezone"
