@@ -7,3 +7,4 @@ locale_gen_exec: /usr/bin/locale-gen
 yaourt_exec: /usr/bin/yaourt -S --noconfirm --cachedir /archlinux-my-setup/tmp
 pacman_exec: /usb/bin/pacman --noconfirm
 makepkg_exec: /usr/bin/makepkg
+python_exec: /usr/bin/python2 -c

@@ -1,13 +1,42 @@
 ---
-- name: "Creates partition table on storage"
-  command: "{{ parted_exec }} {{ storage.name }} mklabel msdos"
+- name: "Collects storage partition table"
+  command: "{{ parted_exec }} {{ storage.name }} -m print"
+  ignore_errors: yes
+  register: partition_table_cmd_result
 
-- name: "Creates physical partition with 513M offset and enables LVM, filling all the remaining space."
-  shell: "{{ parted_exec }} {{ storage.name }} mkpart primary ext4 1M 100% && {{ parted_exec }} {{ storage.name }} set 1 lvm on"
+- name: "Checks if disk is blank (no partition table)"
+  set_fact:
+    write_label: "'unrecognised disk label' in partition_table_cmd_result.stdout"
+    contains_partition: "{{ partition_table_cmd_result.stdout_lines[-1].split(':')[0].isdigit() }}"
+
+- name: "Creates storage label if necessary"
+  command: "{{ parted_exec }} {{ storage.name }} mklabel msdos"
+  when: write_label
+
+- name: "Checks that disk label is supported"
+  fail: msg="Storage {{ storage.name }} uses an unsupported label. Must be msdos or not labeled at all"
+  when: not write_label and 'msdos' not in partition_table_cmd_result.stdout
+
+- name: "Configures partitioning for blank disks"
+  set_fact:
+    new_partition_name: "{{ storage.name }}1"
+    new_partition_offset: 1M
+    vg: vg_1
+  when: not contains_partition
+
+- name: "Configures partitioning for disks with existing partitions"
+  set_fact:
+    new_partition_name: "{{ storage.name }}{{ partition_table_cmd_result.stdout_lines[-1].split(':')[0] | int + 1 }}"
+    new_partition_offset: "{{ partition_table_cmd_result.stdout_lines[-1].split(':')[3] }}"
+    vg: vg_{{ partition_table_cmd_result.stdout_lines[-1].split(':')[0] | int + 1 }}
+  when: contains_partition
+
+- name: "Creates the new physical partition and enables LVM, filling all the remaining space."
+  shell: "{{ parted_exec }} {{ storage.name }} mkpart primary ext4 {{ new_partition_offset }} 100% && {{ parted_exec }} {{ storage.name }} set 1 lvm on"
 
 - name: "Creates a volume group for the physical partition."
   lvg:
-    pvs: "{{ storage.name }}1"
+    pvs: "{{ new_partition_name }}"
     vg: "{{ vg }}"
     force: yes
 

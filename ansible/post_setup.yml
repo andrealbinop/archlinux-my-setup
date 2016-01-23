@@ -2,5 +2,6 @@
 - hosts: all
   vars_files: ['archlinux.yml', '../config.yml']
   tasks:
+    - include: dns.yml
     - include: packages.yml
       when: packages is defined

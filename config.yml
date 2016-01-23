@@ -1,12 +1,16 @@
 # https://wiki.archlinux.org/index.php/Network_configuration
 network:
   interfaces:
-    - { name: 'enp3s0', address: 'dhcp' }
+    - { name: 'enp0s3', address: 'dhcp' }
 
 # https://wiki.archlinux.org/index.php/beginners%27_guide#Prepare_the_storage_devices
 storage:
+
+  # disk to use
+  name: /dev/sda
+  # physical partition to write volumes, a new one will be created at the end of the last partition if not informed
+  #partition: /dev/sda1
   # partition table for device /dev/sda. Use lsblk to know the disks available.
-  name: /dev/sdb
   volumes:
     - { size: '4g', type: 'swap' }
     - { size: '512m', type: 'ext4', mount: '/boot' }
@@ -41,17 +45,10 @@ packages:
     - vim
     - wget
     - curl
+    - lightdm
+    - openbox
     - xf86-video-ati
-    - zsh
-    - xorg-server-xwayland
-    - gnome
     - fuse-exfat
-    - gnome-tweak-tool
-    - openvpn
     - chromium
-    - docker
-  aur:
-    - spotify
 services:
-    - gdm
-    - docker
+    - lightdm

@@ -2,5 +2,5 @@
 - hosts: all
   vars_files: ['archlinux.yml', '../config.yml']
   tasks:
-    - { include: storage.yml, vg: "vg_{{ storage.name.split('/')[-1] }}" }
+    - include: storage.yml
     - include: pacstrap.yml
