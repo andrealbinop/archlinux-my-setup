@@ -10,19 +10,18 @@ storage:
   name: /dev/sda
   volumes:
     - { size: '1g', type: 'swap' }
-    - { size: '20g', type: 'ext4', mount: '/' }
     - { size: '512m', type: 'ext4', mount: '/boot' }
-    - { size: '100%FREE', type: 'ext4', mount: '/home' }
+    - { size: '100%FREE', type: 'ext4', mount: '/' }
 
 # https://wiki.archlinux.org/index.php/beginners%27_guide#Locale
 locale:
   # languages to be enabled. Note that the first one will be exported to LANG: https://wiki.archlinux.org/index.php/beginners%27_guide#Locale
   languages:
-    - 'pt_BR.UTF-8 UTF-8'
     - 'en_US.UTF-8 UTF-8'
-  keymap: br-abnt2
+    #- 'pt_BR.UTF-8 UTF-8'
+  #keymap: br-abnt2
   font: Lat2-Terminus16
-  timezone: Brazil/East
+  #timezone: Brazil/East
 
 #  User section, instructions, please note the following:
 #  - Most params are managed by ansible users module: http://docs.ansible.com/user_module.html
@@ -42,9 +41,8 @@ packages:
   official:
     - vim
     - wget
-    - zsh
-    - git
-    - nodejs
-  # https://aur.archlinux.org/packages
-  aur:
-    - jre
+    #- virtualbox-guest-utils
+
+# Will enable services on boot
+#services:
+ # - vboxservice

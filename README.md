@@ -29,3 +29,11 @@ git clone https://github.com/andreptb/archlinux-my-setup.git
 ``` shell
 sudo /archlinux-my-setup/post_setup.sh
 ```
+
+#### Vagrant
+
+A reference Arch Linux installation built with **archlinux-my-setup** can be tested with [Vagrant](https://www.vagrantup.com/docs/getting-started/). To start just run:
+``` shell
+vagrant init andreptb/archlinux
+vagrant up
+```

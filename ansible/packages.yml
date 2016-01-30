@@ -11,3 +11,10 @@
     command: "{{ yaourt_exec }} {{item}}"
     with_items: packages.aur
     when: packages.aur is defined
+    become: yes
+    become_user: andre
+
+  - name: "Enables configured services"
+    service: "name={{item}}.service enabled=yes state=started"
+    with_items: services
+    when: services is defined
