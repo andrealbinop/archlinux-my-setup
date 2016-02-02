@@ -27,12 +27,14 @@
     dest: /etc/vconsole.conf
     line: "KEYMAP={{ locale.keymap }}\nFONT={{ locale.font }}"
     create: yes
+  when: locale.keymap is defined and locale.font is defined
 
 - name: "Configures timezone"
   file:
     path: /etc/localtime
     src: "/usr/share/zoneinfo/{{ locale.timezone }}"
     state: link
+  when: locale.timezone is defined
 
 - name: "Runs locale.gen"
   command: "{{ locale_gen_exec }}"

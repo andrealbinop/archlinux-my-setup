@@ -1,0 +1,16 @@
+- name: "Downloads dotfiles from git repository if necessary"
+  git: repo={{ item.dotfiles }} dest=/tmp/dotfiles/{{ item.name }} accept_hostkey=yes
+  when: item.dotfiles is defined
+  with_items: users
+
+- name: "Copies downloaded dotfiles to home directory"
+  copy: src=/tmp/dotfiles/{{ item.name }}/ dest=/home/{{ item.name }} accept_hostkey=yes owner={{ item.name }} group={{ item.name }}
+  when: item.dotfiles is defined
+  with_items: users
+
+- name: "Updates users with additional groups"
+  user:
+    name: "{{ item.name }}"
+    groups: "{{ item.groups.split(',')[1:] | join(',') }}"
+  when: item.groups is defined and item.groups.split(',') | length > 1
+  with_items: users

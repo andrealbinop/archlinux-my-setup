@@ -2,6 +2,12 @@
   - name: "updates pacman cache"
     pacman:  update_cache=yes
 
+  - name: "updates pacman key cache"
+    command:  pacman-key --refresh
+
+  - name: "install git package"
+    pacman: name=git
+
   - name: "install packages from official repository"
     pacman: name={{item}}
     with_items: packages.official

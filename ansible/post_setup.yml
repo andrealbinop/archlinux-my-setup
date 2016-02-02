@@ -7,3 +7,4 @@
       when: samba is defined and samba.mount is defined
     - include: packages.yml
       when: packages is defined
+    - include: post_users.yml
